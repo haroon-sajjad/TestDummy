@@ -12,6 +12,15 @@ interface BuildableRepositoryInterface {
 	 */
 	public function build($type, array $attributes);
 
+    /**
+     * Persist the entity and attach pivot entity
+     *
+     * @param $entity
+     * @internal param $type
+     * @return mixed
+     */
+    public function saveWithPivotEntity($entity, $pivotEntity);
+
 	/**
 	 * Persist the entity
 	 *

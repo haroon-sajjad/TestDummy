@@ -31,6 +31,26 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 		return new $type($attributes);
 	}
 
+    /**
+     * Save entity, then attach pivot entity
+     *
+     * @param $pivotEntity
+     * @param $entity
+     * @internal param $type
+     * @return mixed
+     */
+    public function saveWithPivotEntity($entity, $pivotEntity)
+    {
+        $type = $pivotEntity['type'];
+        $subEntity = $pivotEntity['entity'];
+
+        $entity = $this->save($entity);
+
+        $entity->$type()->save($subEntity);
+
+        return $entity;
+    }
+
 	/**
 	 * Persist the entity.
 	 *
@@ -39,7 +59,9 @@ class EloquentDatabaseProvider implements BuildableRepositoryInterface {
 	 */
 	public function save($entity)
 	{
-	   $entity->save();
+        $entity->save();
+
+        return $entity;
 	}
 
 }

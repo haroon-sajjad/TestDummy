@@ -25,7 +25,7 @@ class Builder {
 	 */
 	protected $relationshipIds = [];
 
-	/**
+    /**
 	 * The buildable repository layer.
 	 *
 	 * @var BuildableRepositoryInterface
@@ -147,6 +147,7 @@ class Builder {
 	protected function persist($type, array $fields = [])
 	{
 		$entity = $this->build($type, $fields);
+		$pivotEntity = [];
 
 		// We'll filter through all of the columns, and check
 		// to see if there are any defined relationships. If there
@@ -157,7 +158,18 @@ class Builder {
 			{
 				$entity[$column] = $this->fetchRelationshipId($value['type']);
 			}
+
+            if ($this->hasRelationshipPivot($column, $value))
+            {
+                $pivotEntity = ['type' => strtolower($value['type']), 'entity' => $this->build($value['type'])];
+                unset($entity->$column);
+            }
 		}
+
+        if ($pivotEntity)
+        {
+            return $this->database->saveWithPivotEntity($entity, $pivotEntity);
+        }
 
 		$this->database->save($entity);
 
@@ -172,9 +184,21 @@ class Builder {
 	 * @return boolean
 	 */
 	protected function hasRelationshipAttribute($column, $value)
-	{
+    {
 		return preg_match('/.+?_id$/', $column) and is_array($value);
 	}
+
+    /**
+     * Check if the attribute refers to a pivot table
+     *
+     * @param $column
+     * @param $value
+     * @return bool
+     */
+    private function hasRelationshipPivot($column, $value)
+    {
+        return preg_match('/^pivot$/', $column) and is_array($value);
+    }
 
 	/**
 	 * Get the ID for the relationship.
