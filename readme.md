@@ -163,6 +163,16 @@ You need to let TestDummy know the type of its associated model. TestDummy will 
 > This means that, when you do, say, `Factory::create('Song')`, if one of your columns references a `album_id`, then TestDummy will save an `Album` record to the database, too. This
 will continue recursively. So, if the `Album` has an `artist_id`, then an artist will also be created.
 
+```yaml
+Album:
+  title: Back in Black
+  pivot:
+    type: Genre
+```
+You can also specify a many-to-many relationship, TestDummy will then automatically build and save the related model as will as associate both models.
+
+> With `Factory::create('Album')`, if one of your columns references `pivot`, TestDummy will save a Genre record to the database as will as associate the album and genre.
+
 ### Step 3: Setup
 
 When testing against a database, it's recommended that each test works with the exact same database environment and structure. That way, you can protect yourself against false positives.
