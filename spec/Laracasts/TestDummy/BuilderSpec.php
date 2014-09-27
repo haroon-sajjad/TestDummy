@@ -32,7 +32,7 @@ class BuilderSpec extends ObjectBehavior {
 
     function it_can_override_default_fixture(BuildableRepositoryInterface $builderRepository)
     {
-        $overrides = ['name' => 'Foobar'];
+        $overrides = ['name' => 'Foobar', 'pivot' => ['type' => 'Genre']];
 
         $builderRepository->build('Album', $overrides)->willReturn($overrides);
 

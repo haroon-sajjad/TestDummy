@@ -1,8 +1,13 @@
 Album:
   name: Back in Black
+  pivot:
+    type: Genre
 
 Song:
   name: Shook Me All Night Long
   album_id:
     type: Album
   length: 200
+
+Genre:
+    name: Hard Rock
