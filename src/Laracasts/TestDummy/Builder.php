@@ -26,6 +26,13 @@ class Builder {
 	protected $relationshipIds = [];
 
     /**
+     * Built pivot table Entities
+     *
+     * @var array
+     */
+    protected $pivotEntity = [];
+
+    /**
 	 * The buildable repository layer.
 	 *
 	 * @var BuildableRepositoryInterface
@@ -161,7 +168,9 @@ class Builder {
 
             if ($this->hasRelationshipPivot($column, $value))
             {
-                $pivotEntity = ['type' => strtolower($value['type']), 'entity' => $this->build($value['type'])];
+                $type = $this->getType($value);
+
+                $pivotEntity = ['type' => $type, 'entity' => $this->build($value['type'])];
                 unset($entity->$column);
             }
 		}
@@ -227,5 +236,17 @@ class Builder {
 	{
 		return isset($this->relationshipIds[$relationshipType]);
 	}
+
+    /**
+     * Get relationship type without namespace, return lowercase.
+     * @param $value
+     * @return string
+     */
+    protected function getType($value)
+    {
+        $namespace = explode('\\', $value['type']);
+        $model = array_pop($namespace);
+        return strtolower($model);
+    }
 
 }
